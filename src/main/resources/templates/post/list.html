@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판 - Spring 게시판</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">게시글 목록</h4>
+        <a th:href="@{/posts/new}" class="btn btn-primary btn-sm" sec:authorize="isAuthenticated()">✏️ 글쓰기</a>
+    </div>
+
+    <!-- 게시글 테이블 -->
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th style="width:70px;" class="text-center">번호</th>
+                <th>제목</th>
+                <th style="width:120px;" class="text-center">작성자</th>
+                <th style="width:160px;" class="text-center">작성일</th>
+                <th style="width:80px;" class="text-center">조회</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 게시글이 없을 때 -->
+            <tr th:if="${posts.isEmpty()}">
+                <td colspan="5" class="text-center text-muted py-4">첫 번째 게시글을 작성해보세요!</td>
+            </tr>
+            <!-- 게시글 목록 반복 -->
+            <tr th:each="post, stat : ${posts.content}">
+                <!-- 번호: 전체 글 수 - 현재 순서로 역순 번호 표시 -->
+                <td class="text-center text-muted"
+                    th:text="${posts.totalElements - (posts.number * posts.size) - stat.index}"></td>
+                <td>
+                    <a th:href="@{/posts/{id}(id=${post.id})}"
+                       th:text="${post.title}"
+                       class="text-decoration-none text-dark fw-semibold"></a>
+                </td>
+                <td class="text-center" th:text="${post.author.nickname}"></td>
+                <td class="text-center text-muted small"
+                    th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td class="text-center text-muted" th:text="${post.viewCount}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 페이지네이션 -->
+    <nav th:if="${posts.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <!-- 이전 버튼 -->
+            <li class="page-item" th:classappend="${!posts.hasPreviousPage()} ? 'disabled'">
+                <a class="page-link" th:href="@{/posts(page=${currentPage - 1})}">이전</a>
+            </li>
+            <!-- 페이지 번호 -->
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, posts.totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/posts(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+            <!-- 다음 버튼 -->
+            <li class="page-item" th:classappend="${!posts.hasNextPage()} ? 'disabled'">
+                <a class="page-link" th:href="@{/posts(page=${currentPage + 1})}">다음</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="text-muted small text-end">
+        전체 <span th:text="${posts.totalElements}"></span>개
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

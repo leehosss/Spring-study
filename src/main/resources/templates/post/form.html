@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isEdit} ? '게시글 수정' : '게시글 작성'"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0" th:text="${isEdit} ? '게시글 수정' : '새 게시글 작성'"></h5>
+        </div>
+        <div class="card-body p-4">
+            <!-- isEdit에 따라 action URL 분기 -->
+            <form th:action="${isEdit} ? @{/posts/{id}/edit(id=${postId})} : @{/posts/new}"
+                  th:object="${postForm}"
+                  method="post">
+
+                <div class="mb-3">
+                    <label for="title" class="form-label fw-semibold">제목</label>
+                    <input type="text" id="title" th:field="*{title}"
+                           class="form-control" placeholder="제목을 입력하세요">
+                    <div th:if="${#fields.hasErrors('title')}" class="text-danger small mt-1"
+                         th:errors="*{title}"></div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="content" class="form-label fw-semibold">내용</label>
+                    <textarea id="content" th:field="*{content}"
+                              class="form-control" rows="15"
+                              placeholder="내용을 입력하세요"></textarea>
+                    <div th:if="${#fields.hasErrors('content')}" class="text-danger small mt-1"
+                         th:errors="*{content}"></div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <!-- 취소: 수정이면 상세로, 작성이면 목록으로 -->
+                    <a th:href="${isEdit} ? @{/posts/{id}(id=${postId})} : @{/posts}"
+                       class="btn btn-outline-secondary">취소</a>
+                    <button type="submit" class="btn btn-primary"
+                            th:text="${isEdit} ? '수정 완료' : '작성 완료'"></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

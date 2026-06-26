@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.title} + ' - Spring 게시판'"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .post-content { white-space: pre-wrap; line-height: 1.8; }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <!-- 제목 -->
+            <h4 class="mb-2" th:text="${post.title}"></h4>
+            <!-- 메타 정보 -->
+            <div class="d-flex gap-3 text-muted small">
+                <span>👤 <span th:text="${post.author.nickname}"></span></span>
+                <span>📅 <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></span></span>
+                <span>👁️ <span th:text="${post.viewCount}"></span></span>
+            </div>
+        </div>
+        <div class="card-body py-4">
+            <!-- 본문 -->
+            <div class="post-content" th:text="${post.content}"></div>
+        </div>
+        <div class="card-footer bg-white d-flex justify-content-between">
+            <!-- 목록으로 -->
+            <a th:href="@{/posts}" class="btn btn-outline-secondary btn-sm">← 목록</a>
+
+            <!-- 작성자만 수정/삭제 가능 -->
+            <div sec:authorize="isAuthenticated()">
+                <th:block th:if="${#authentication.name == post.author.username}">
+                    <a th:href="@{/posts/{id}/edit(id=${post.id})}"
+                       class="btn btn-warning btn-sm me-1">수정</a>
+                    <!-- 삭제는 POST 방식으로 처리 -->
+                    <form th:action="@{/posts/{id}/delete(id=${post.id})}" method="post" class="d-inline"
+                          onsubmit="return confirm('정말 삭제하시겠습니까?')">
+                        <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                    </form>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
