@@ -1,6 +1,9 @@
 # Spring Boot 게시판
 
-Spring Boot + Spring Security + JPA + MySQL 로 구현한 로그인 기능이 포함된 게시판 프로젝트입니다.
+> 공부 목적으로 작성한 코드입니다.
+
+Spring Boot + Spring Security + JPA + MySQL 을 학습하면서 만든 게시판 프로젝트입니다.  
+Controller → Service → Repository → DB 흐름과 Spring Security 로그인 인증 구현을 익히는 것을 목표로 했습니다.
 
 ## 기술 스택
 
