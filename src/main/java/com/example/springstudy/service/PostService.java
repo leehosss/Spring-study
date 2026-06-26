@@ -1,12 +1,14 @@
 package com.example.springstudy.service;
 
-import com.example.springstudy.entity.Post;
-import com.example.springstudy.repository.PostRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.springstudy.entity.Post;
+import com.example.springstudy.repository.PostRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ public class PostService {
     public Page<Post> findAll(Pageable pageable) {
         return postRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
-
+    // 확인
     // 게시글 단건 조회 + 조회수 증가 (한 트랜잭션 안에서 처리)
     @Transactional
     public Post findByIdAndIncrementView(Long id) {
